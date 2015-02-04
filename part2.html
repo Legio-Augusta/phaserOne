@@ -1,0 +1,80 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 2</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<a onclick="run();return false" href="javascript:void(0);" class="btn btn-brown">Run</a>
+<br/>
+<br/>
+<a href="http://www.dofactory.com/javascript/observer-design-pattern">see more here</a>
+<script type="text/javascript">
+
+    function Click() {
+        this.handlers = []; // observers
+    }
+     
+    Click.prototype = {
+     
+        subscribe: function(fn) {
+            this.handlers.push(fn);
+        },
+     
+        unsubscribe: function(fn) {
+            this.handlers = this.handlers.filter(
+                function(item) {
+                    if (item !== fn) {
+                        return item;
+                    }
+                }
+            );
+        },
+         
+        fire: function(o, thisObj) {
+            var scope = thisObj || window;
+            this.handlers.forEach(function(item) {
+                item.call(scope, o);
+            });
+        }
+    }
+     
+    // log helper
+     
+    var log = (function() {
+        var log = "";
+             
+        return {
+            add: function(msg) { log += msg + "\n"; },
+            show: function() { alert(log); log = ""; }
+        }
+    })();
+         
+    function run() {
+         
+        var clickHandler = function(item) {
+            log.add("fired: " + item);
+        };
+         
+        var click = new Click();
+         
+        click.subscribe(clickHandler);
+        click.fire('event #1');
+        click.unsubscribe(clickHandler);
+        click.fire('event #2');
+        click.subscribe(clickHandler);
+        click.fire('event #3');
+         
+        log.show();
+    }
+
+</script>
+
+</body>
+</html>
